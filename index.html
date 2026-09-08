@@ -1,0 +1,342 @@
+ <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Oasis - Acceso Anticipado</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Ocultar barra de scroll para una experiencia más de "App Nativa" */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        * {
+            scrollbar-width: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background-color: #e5e7eb; /* Fondo gris para pantallas grandes */
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+
+    <!-- Contenedor Principal (Simula la pantalla de un celular) AHORA CON FONDO OSCURO -->
+    <div id="app-container" class="relative w-full max-w-md h-[100dvh] bg-[#0a0a0a] overflow-hidden shadow-2xl sm:rounded-[2.5rem] sm:h-[90vh] sm:border-[8px] sm:border-gray-900 transition-colors duration-700">
+        
+        <!-- ============================================== -->
+        <!-- PANTALLA DE BIENVENIDA (OSCURA)                -->
+        <!-- ============================================== -->
+        <div id="welcome-screen" class="absolute inset-0 z-50 flex flex-col items-center justify-center p-8 bg-[#0a0a0a] transition-opacity duration-500">
+            
+            <!-- Anfitrión / Logo -->
+            <div class="relative mb-6 animate-[bounce_3s_ease-in-out_infinite]">
+                <img src="Oasis Portada.jpeg" alt="Oasis Logo" class="w-32 h-32 rounded-3xl object-cover shadow-xl border-4 border-white/10">
+                <div class="absolute bottom-1 right-1 bg-green-500 w-5 h-5 rounded-full border-2 border-[#0a0a0a]"></div>
+            </div>
+
+            <h1 class="text-2xl font-bold text-white mb-4 text-center tracking-tight">Bienvenido al Acceso Anticipado</h1>
+            
+            <p class="text-sm text-gray-400 text-center mb-8 leading-relaxed">
+                En Jassos Estudios creemos que la tecnología debe ser una herramienta de apoyo, no una distracción. Hoy te damos una pequeña muestra de Oasis, tu próximo espacio Personal.
+            </p>
+
+            <div class="w-full space-y-4">
+                <div class="relative">
+                    <i data-lucide="user" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500"></i>
+                    <input type="text" id="user-name" placeholder="¿Cómo te llamas?" class="w-full bg-[#1a1a1a] text-white placeholder-gray-500 px-12 py-4 rounded-2xl outline-none border border-white/10 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all font-medium">
+                </div>
+                
+                <button onclick="enterApp()" class="w-full bg-white hover:bg-gray-200 text-black py-4 rounded-2xl font-bold tracking-wide shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2">
+                    Entrar a mi Oasis <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- DASHBOARD PRINCIPAL (OSCURO)                   -->
+        <!-- ============================================== -->
+        <div id="dashboard-screen" class="absolute inset-0 bg-[#0a0a0a] text-white flex flex-col hidden opacity-0 transition-opacity duration-500 z-40">
+            
+            <!-- Header -->
+            <header class="px-6 pt-12 pb-4 shrink-0 relative">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <p class="text-sm text-gray-400 font-medium">Hola,</p>
+                        <h2 id="display-name" class="text-xl font-bold text-white">Estudiante</h2>
+                    </div>
+                    <img src="Oasis Portada.jpeg" alt="Oasis Logo" class="w-12 h-12 rounded-xl object-cover border border-white/10 shadow-sm bg-[#1a1a1a] p-1">
+                </div>
+                <div class="text-center mt-2">
+                    <h1 class="text-4xl font-medium tracking-tight leading-none mb-1">Oasis</h1>
+                    <p class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em]">Mi Bienestar Personal</p>
+                </div>
+            </header>
+
+            <!-- Cuadrícula de Módulos (Scrollable) -->
+            <main class="flex-1 overflow-y-auto px-6 pb-32 space-y-4">
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="showExclusiveToast()" class="bg-[#1a1a1a] text-gray-300 py-6 rounded-[2rem] flex flex-col items-center gap-3 relative transition-transform active:scale-95">
+                        <i data-lucide="lock" class="absolute top-4 right-4 w-4 h-4 text-gray-600"></i>
+                        <i data-lucide="box" class="w-8 h-8 opacity-50"></i>
+                        <span class="text-xs font-bold tracking-wide">Herramientas</span>
+                    </button>
+
+                    <button onclick="showExclusiveToast()" class="bg-[#1a1a1a] text-gray-300 py-6 rounded-[2rem] flex flex-col items-center gap-3 relative transition-transform active:scale-95">
+                        <i data-lucide="lock" class="absolute top-4 right-4 w-4 h-4 text-gray-600"></i>
+                        <i data-lucide="calendar" class="w-8 h-8 opacity-50"></i>
+                        <span class="text-xs font-bold tracking-wide">Actividades</span>
+                    </button>
+
+                    <button onclick="openModal('modal-juegos')" class="bg-purple-200 text-purple-900 py-6 rounded-[2rem] flex flex-col items-center gap-3 shadow-lg shadow-purple-500/20 transition-transform active:scale-95">
+                        <i data-lucide="gamepad-2" class="w-8 h-8"></i>
+                        <span class="text-xs font-bold tracking-wide">Zona de Juegos</span>
+                    </button>
+
+                    <button onclick="showExclusiveToast()" class="bg-[#1a1a1a] text-gray-300 py-6 rounded-[2rem] flex flex-col items-center gap-3 relative transition-transform active:scale-95">
+                        <i data-lucide="lock" class="absolute top-4 right-4 w-4 h-4 text-gray-600"></i>
+                        <i data-lucide="music" class="w-8 h-8 opacity-50"></i>
+                        <span class="text-xs font-bold tracking-wide">Música</span>
+                    </button>
+
+                    <button onclick="showExclusiveToast()" class="bg-[#1a1a1a] text-gray-300 py-6 rounded-[2rem] flex flex-col items-center gap-3 relative transition-transform active:scale-95">
+                        <i data-lucide="lock" class="absolute top-4 right-4 w-4 h-4 text-gray-600"></i>
+                        <i data-lucide="activity" class="w-8 h-8 opacity-50"></i>
+                        <span class="text-xs font-bold tracking-wide">Check-in</span>
+                    </button>
+
+                    <button onclick="showExclusiveToast()" class="bg-[#1a1a1a] text-gray-300 py-6 rounded-[2rem] flex flex-col items-center gap-3 relative transition-transform active:scale-95">
+                        <i data-lucide="lock" class="absolute top-4 right-4 w-4 h-4 text-gray-600"></i>
+                        <i data-lucide="flame" class="w-8 h-8 opacity-50"></i>
+                        <span class="text-xs font-bold tracking-wide">Racha</span>
+                    </button>
+                </div>
+
+                <button onclick="showExclusiveToast()" class="w-full bg-rose-400 text-rose-950 py-5 rounded-[2rem] flex items-center justify-center gap-3 shadow-lg shadow-rose-500/20 relative transition-transform active:scale-95 mt-2">
+                    <i data-lucide="lock" class="absolute right-6 w-5 h-5 opacity-60"></i>
+                    <i data-lucide="heart-pulse" class="w-5 h-5"></i>
+                    <span class="text-sm font-bold tracking-wide">AYUDA URGENTE</span>
+                </button>
+            </main>
+
+            <!-- Bottom Navigation -->
+            <nav class="absolute bottom-0 w-full bg-[#0a0a0a]/90 backdrop-blur-xl border-t border-white/10 px-6 py-4 flex justify-between items-center z-50 rounded-b-[2.5rem]">
+                <button onclick="closeAllModals()" class="flex flex-col items-center gap-1 text-gray-400 hover:text-white transition-colors w-16">
+                    <i data-lucide="home" class="w-6 h-6"></i>
+                    <span class="text-[10px] font-bold">Inicio</span>
+                </button>
+
+                <button onclick="openModal('modal-lia')" class="relative flex flex-col items-center -mt-8 group">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 p-[2px] shadow-xl shadow-purple-500/30 transition-transform active:scale-95">
+                        <div class="w-full h-full bg-[#0a0a0a] rounded-full flex items-center justify-center">
+                            <i data-lucide="sparkles" class="w-7 h-7 text-purple-400 fill-current"></i>
+                        </div>
+                    </div>
+                    <span class="text-[10px] font-bold text-purple-400 mt-2">LIA</span>
+                </button>
+
+                <button onclick="openModal('modal-notas')" class="flex flex-col items-center gap-1 text-gray-400 hover:text-white transition-colors w-16">
+                    <i data-lucide="book-heart" class="w-6 h-6"></i>
+                    <span class="text-[10px] font-bold">Notas</span>
+                </button>
+            </nav>
+        </div>
+
+
+        <!-- ============================================== -->
+        <!-- MODALES Y NOTIFICACIONES                       -->
+        <!-- ============================================== -->
+
+        <!-- Toast de Notificaciones -->
+        <div id="toast" class="absolute top-10 left-1/2 -translate-x-1/2 bg-white text-gray-900 px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 transform -translate-y-24 opacity-0 transition-all duration-300 z-[100] w-[90%] max-w-sm">
+            <i data-lucide="info" class="w-5 h-5 text-purple-500"></i>
+            <span id="toast-text" class="text-xs font-bold leading-tight">Función exclusiva. Descúbrela este 25 de Septiembre en el lanzamiento oficial.</span>
+        </div>
+
+        <!-- Modal LIA -->
+        <div id="modal-lia" class="absolute inset-0 bg-[#0a0a0a] z-50 hidden flex-col translate-y-full transition-transform duration-500">
+            <div class="px-6 pt-12 pb-4 flex items-center gap-4 border-b border-white/10 shrink-0">
+                <button onclick="closeModal('modal-lia')" class="text-white"><i data-lucide="chevron-down" class="w-8 h-8"></i></button>
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center"><i data-lucide="sparkles" class="w-5 h-5 text-white"></i></div>
+                    <div>
+                        <h2 class="font-bold text-white leading-tight">LIA</h2>
+                        <p class="text-[10px] text-purple-400 uppercase tracking-widest">En Línea</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contenedor de Chat -->
+            <div id="lia-chat-container" class="flex-1 p-6 flex flex-col gap-4 overflow-y-auto">
+                <div class="bg-[#1a1a1a] p-4 rounded-3xl rounded-tl-sm self-start max-w-[80%] mt-auto">
+                    <p class="text-sm text-gray-200">¡Hola! Soy LIA, tu asistente personal. Estoy preparándome para el gran lanzamiento. ¿Hay algo que quieras decirme antes de abrir las puertas?</p>
+                </div>
+            </div>
+
+            <!-- Input de Chat -->
+            <div class="p-4 border-t border-white/10 shrink-0">
+                <div class="bg-[#1a1a1a] rounded-full p-2 flex items-center gap-2">
+                    <input type="text" id="lia-input" placeholder="Escribe un mensaje..." class="bg-transparent flex-1 text-sm px-4 outline-none text-white">
+                    <button id="lia-send-btn" onclick="sendLiaMessage()" class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center transition-transform active:scale-95"><i data-lucide="send" class="w-4 h-4 text-white"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Notas -->
+        <div id="modal-notas" class="absolute inset-0 bg-[#0a0a0a] z-50 hidden flex-col translate-y-full transition-transform duration-500">
+            <div class="px-6 pt-12 pb-4 flex items-center gap-4 shrink-0">
+                <button onclick="closeModal('modal-notas')" class="text-white"><i data-lucide="chevron-down" class="w-8 h-8"></i></button>
+                <h2 class="text-xl font-bold text-white">Mis Notas</h2>
+            </div>
+            <div class="flex-1 p-6 flex flex-col">
+                <div class="bg-[#1a1a1a] p-5 rounded-[2rem] flex-1 border border-white/5 flex flex-col">
+                    <textarea id="nota-input" class="w-full flex-1 bg-transparent resize-none outline-none text-gray-300 text-sm leading-relaxed" placeholder="Escribe lo que tienes en mente hoy... (Versión de prueba)"></textarea>
+                    <div class="flex justify-end pt-4">
+                        <button onclick="saveNote()" class="bg-white text-black px-6 py-3 rounded-2xl font-bold text-xs flex items-center gap-2 shadow-lg active:scale-95 transition-transform">
+                            <i data-lucide="save" class="w-4 h-4"></i> Guardar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Juegos -->
+        <div id="modal-juegos" class="absolute inset-0 bg-[#0a0a0a] z-50 hidden flex-col items-center justify-center p-6 translate-y-full transition-transform duration-500">
+            <button onclick="closeModal('modal-juegos')" class="absolute top-12 left-6 text-white"><i data-lucide="chevron-down" class="w-8 h-8"></i></button>
+            <i data-lucide="hammer" class="w-20 h-20 text-purple-400 mb-6 animate-pulse"></i>
+            <h2 class="text-2xl font-bold text-white mb-2">Juego en Construcción</h2>
+            <p class="text-gray-400 text-center text-sm px-4 mb-8">Nuestros desarrolladores están armando los bloques. ¡Estará listo para el 25 de Septiembre!</p>
+            
+            <button onclick="closeModal('modal-juegos')" class="bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 px-6 rounded-2xl transition-transform active:scale-95 flex items-center gap-2 shadow-lg shadow-purple-500/20">
+                <i data-lucide="home" class="w-5 h-5"></i> Volver al Inicio
+            </button>
+        </div>
+
+    </div>
+
+    <!-- ============================================== -->
+    <!-- LÓGICA DE LA APLICACIÓN (JAVASCRIPT)           -->
+    <!-- ============================================== -->
+    <script>
+        lucide.createIcons();
+        let toastTimeout;
+
+        function enterApp() {
+            const nameInput = document.getElementById('user-name').value.trim();
+            const displayName = nameInput !== '' ? nameInput : 'Estudiante';
+            document.getElementById('display-name').innerText = displayName;
+
+            const welcomeScreen = document.getElementById('welcome-screen');
+            const dashboardScreen = document.getElementById('dashboard-screen');
+
+            welcomeScreen.classList.add('opacity-0');
+
+            setTimeout(() => {
+                welcomeScreen.classList.add('hidden');
+                dashboardScreen.classList.remove('hidden');
+                void dashboardScreen.offsetWidth;
+                dashboardScreen.classList.remove('opacity-0');
+                dashboardScreen.classList.add('opacity-100');
+            }, 500);
+        }
+
+        // Sistema de Notificaciones dinámico
+        function showExclusiveToast(customMessage) {
+            const toast = document.getElementById('toast');
+            const toastText = document.getElementById('toast-text');
+            
+            toastText.innerText = customMessage || "Función exclusiva. Descúbrela este 25 de Septiembre en el lanzamiento oficial.";
+            
+            clearTimeout(toastTimeout);
+            
+            toast.classList.remove('-translate-y-24', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('-translate-y-24', 'opacity-0');
+            }, 3000);
+        }
+
+        // Guardar Nota Personalizado
+        function saveNote() {
+            const notaInput = document.getElementById('nota-input');
+            if(notaInput.value.trim() === '') return;
+            
+            showExclusiveToast("Ve tu Nota Guardada en Oasis este 25 de Septiembre");
+            setTimeout(() => {
+                closeModal('modal-notas');
+                notaInput.value = '';
+            }, 800);
+        }
+
+        // Lógica de Chat LIA
+        function sendLiaMessage() {
+            const input = document.getElementById('lia-input');
+            const btn = document.getElementById('lia-send-btn');
+            const chatContainer = document.getElementById('lia-chat-container');
+            const message = input.value.trim();
+
+            if(!message) return;
+
+            // Inserta el mensaje del usuario
+            const userMsgHTML = `
+                <div class="bg-purple-600 p-4 rounded-3xl rounded-tr-sm self-end max-w-[80%] text-white">
+                    <p class="text-sm">${message}</p>
+                </div>
+            `;
+            chatContainer.insertAdjacentHTML('beforeend', userMsgHTML);
+            
+            // Bloquea el input para que solo se mande 1 mensaje
+            input.value = '';
+            input.disabled = true;
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            // Simula que LIA está escribiendo y responde
+            setTimeout(() => {
+                const liaReplyHTML = `
+                    <div class="bg-[#1a1a1a] p-4 rounded-3xl rounded-tl-sm self-start max-w-[80%]">
+                        <p class="text-sm text-gray-200">Vaya que interesante, te lo dire en la App de Oasis este 25 de Septiembre, te veo en el lanzamiento 😊💜</p>
+                    </div>
+                `;
+                chatContainer.insertAdjacentHTML('beforeend', liaReplyHTML);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }, 1000);
+        }
+
+        // Navegación de Modales
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.remove('hidden');
+            void modal.offsetWidth; 
+            modal.classList.remove('translate-y-full');
+            modal.classList.add('translate-y-0');
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.remove('translate-y-0');
+            modal.classList.add('translate-y-full');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 500);
+        }
+
+        function closeAllModals() {
+            closeModal('modal-lia');
+            closeModal('modal-notas');
+            closeModal('modal-juegos');
+        }
+    </script>
+</body>
+</html>
